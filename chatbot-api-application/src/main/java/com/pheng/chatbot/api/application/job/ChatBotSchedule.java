@@ -21,23 +21,34 @@ import java.util.Random;
  * 另外就是还可以把一些定时任务放到这里面还有可以处理mq信息，比如发送mq信息
  * 另外就是还可以对外提供一些接口
  *
+ *
+ *
  */
-@Configuration
-@EnableScheduling
-public class ChatBotSchedule {
+
+public class ChatBotSchedule implements Runnable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ChatBotSchedule.class);
-    @Value("${chatbot-api.groupID}")
-    private String groupID;
-    @Value("${chatbot-api.cookie}")
+    private String groupName;
+    private String groupId;
     private String cookie;
+    private String openAiKey;
+    private boolean silenced;
 
-    @Resource
     private IChatApi chatbotApi;
-
-    @Resource
     private IOllamaApi ollamaApi;
 
-    @Scheduled(cron = "0 0/3 * * *  ?")
+    public ChatBotSchedule(String groupName, String groupId, String cookie, String openAiKey, IChatApi chatbotApi, IOllamaApi ollamaApi, boolean silenced) {
+        this.groupName = groupName;
+        this.groupId = groupId;
+        this.cookie = cookie;
+        this.openAiKey = openAiKey;
+        this.chatbotApi = chatbotApi;
+        this.ollamaApi = ollamaApi;
+        this.silenced = silenced;
+    }
+
+
+
+    @Override
     public void run() {
         if (new Random().nextBoolean()){
             log.info("随机打烊");
@@ -52,7 +63,7 @@ public class ChatBotSchedule {
         }
         try {
             // 调用待回答接口
-            UnAnsweredQuestionsAggregates questionsAggregates = chatbotApi.queryUnAnsweredQuestionsTopicId(groupID, cookie);
+            UnAnsweredQuestionsAggregates questionsAggregates = chatbotApi.queryUnAnsweredQuestionsTopicId(groupId, cookie);
 
             // 执行回答的逻辑
             List<Topics> topics = questionsAggregates.getResp_data().getTopics();
@@ -67,7 +78,7 @@ public class ChatBotSchedule {
                 AiResp result = ollamaApi.getOllamaResult(questionText);
                 String response = result.getResponse();
 
-                chatbotApi.answer(groupID, cookie, topicId, response, false);
+                chatbotApi.answer(groupId, cookie, topicId, response, false);
 
                 log.info("编号：{}，回答问题：{}", topic, questionText);
             }

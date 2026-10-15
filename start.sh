@@ -1,0 +1,1 @@
+docker run -p 18900:18900  --name chatbot-api -d  chatbot-api:1.0

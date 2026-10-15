@@ -1,2 +1,7 @@
 server:
   port: 18900
+
+chatbot-api:
+  #mock的值
+  groupID: 123
+  cookie: 123

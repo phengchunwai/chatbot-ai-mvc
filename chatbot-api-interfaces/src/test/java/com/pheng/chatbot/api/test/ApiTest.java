@@ -15,6 +15,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +30,8 @@ import java.nio.charset.StandardCharsets;
  * 现在企业开放api都要钱，只能模拟步骤看不见实际效果，但是可以本地搭建一套这样的小型服务来测试
  */
 public class ApiTest {
+    private static final Logger log = LoggerFactory.getLogger(ApiTest.class);
+
     /**
      * mock 网页上的提问接口
      */
@@ -139,7 +143,7 @@ public class ApiTest {
 
         String apiUrl = "http://localhost:11434/api/generate";
         String modelName = "qwen2.5-coder:7b"; // 替换为你的模型名
-        String promptText = "请你说一下冒牌排序的核心思想，请简要回答";
+        String promptText = "西南四省是哪四个，请简要回答";
 
         // fastjson 构建请求体，避免手动拼字符串
         JSONObject requestBody = new JSONObject();
@@ -157,7 +161,8 @@ public class ApiTest {
 
             if (response.isOk()) {
                 JSONObject result = JSON.parseObject(response.body());
-                System.out.println("模型回答: " + result.getString("response"));
+                log.info("模型回答: {}", result);
+//                System.out.println("模型回答: " + result.getString("response"));
             } else {
                 System.out.println("请求失败，响应码: " + response.getStatus());
             }

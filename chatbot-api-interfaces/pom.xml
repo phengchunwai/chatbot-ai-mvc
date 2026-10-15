@@ -87,7 +87,21 @@
             <groupId>com.pheng.ai</groupId>
             <artifactId>chatbot-api-application</artifactId>
             <version>1.0</version>
+        </dependency><!-- JSON处理库 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.0</version>
         </dependency>
+        <!-- 可选：异步HTTP客户端 -->
+        <dependency>
+            <groupId>org.asynchttpclient</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>2.12.3</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
